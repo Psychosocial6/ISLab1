@@ -1,6 +1,7 @@
 package org.backend.lab1.locations;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.backend.lab1.locations.dto.LocationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/location")
 @RestController
@@ -17,6 +19,7 @@ public class LocationController {
 
     @GetMapping
     public ResponseEntity<List<LocationResponse>> getLocations() {
+        log.info("getLocations called");
         return null;
     }
 }

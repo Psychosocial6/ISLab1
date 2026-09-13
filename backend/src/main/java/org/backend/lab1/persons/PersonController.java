@@ -34,6 +34,7 @@ public class PersonController {
 
     @GetMapping
     public ResponseEntity<List<PersonResponse>> getPersons() {
+        log.info("getPersons called");
         return null;
     }
 
@@ -42,6 +43,7 @@ public class PersonController {
             @NotNull(message = "person id required")
             @Positive(message = "person id must be positive")
             @PathVariable Long id) {
+        log.info("getPersonById called, id={}", id);
         return null;
     }
 
@@ -49,6 +51,7 @@ public class PersonController {
     public ResponseEntity<PersonResponse> createPerson(
             @Valid
             @RequestBody PersonRequest personRequest) {
+        log.info("createPerson called, personRequest={}", personRequest);
         return null;
     }
 
@@ -59,6 +62,7 @@ public class PersonController {
             @PathVariable Long id,
             @Valid
             @RequestBody PersonRequest personRequest) {
+        log.info("updatePerson called, id={}, personRequest={}", id, personRequest);
         return null;
     }
 
@@ -67,16 +71,19 @@ public class PersonController {
             @NotNull(message = "person id required")
             @Positive(message = "person id must be positive")
             @PathVariable Long id) {
+        log.info("deletePerson called, id={}", id);
         return null;
     }
 
     @DeleteMapping("/delete-by-height")
     public ResponseEntity<Void> deleteByHeight(@RequestParam(name = "height") Double height) {
+        log.info("deleteByHeight called, height={}", height);
         return null;
     }
 
     @GetMapping("/avg-height")
     public ResponseEntity<Map<String, Double>> getAverageHeight() {
+        log.info("getAverageHeight called");
         return null;
     }
 
@@ -84,16 +91,19 @@ public class PersonController {
     public ResponseEntity<Map<String, Long>> countNationalityLessThan(
             @RequestParam(name = "nationality")
             Country nationality) {
+        log.info("countNationalityLessThan called, nationality={}", nationality);
         return null;
     }
 
     @GetMapping("/count-hair-color")
     public ResponseEntity<Map<String, Long>> countHairColor(@RequestParam(name = "hair-color") Color color) {
+        log.info("countHairColor called, color={}", color);
         return null;
     }
 
     @GetMapping("/hair-color-percentage")
     public ResponseEntity<Map<String, Double>> getHairColorPercentage(@RequestParam(name = "hair-color") Color color) {
+        log.info("getHairColorPercentage called, color={}", color);
         return null;
     }
 }

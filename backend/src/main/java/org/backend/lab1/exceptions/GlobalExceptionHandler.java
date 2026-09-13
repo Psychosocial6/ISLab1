@@ -1,6 +1,7 @@
 package org.backend.lab1.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -32,6 +34,7 @@ public class GlobalExceptionHandler {
                 message,
                 LocalDateTime.now()
         );
+        log.warn("MethodArgumentNotValidException, message={}", message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
@@ -47,6 +50,7 @@ public class GlobalExceptionHandler {
                 message,
                 LocalDateTime.now()
         );
+        log.warn("ConstraintViolationException, message={}", message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
@@ -59,6 +63,7 @@ public class GlobalExceptionHandler {
                 message,
                 LocalDateTime.now()
         );
+        log.warn("HttpMessageNotReadableException, message={}", message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
