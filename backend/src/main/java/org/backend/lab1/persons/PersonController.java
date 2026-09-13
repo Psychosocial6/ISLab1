@@ -1,5 +1,8 @@
 package org.backend.lab1.persons;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.backend.lab1.persons.dto.PersonRequest;
@@ -29,22 +32,35 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PersonResponse> getPersonById(@PathVariable Long id) {
+    public ResponseEntity<PersonResponse> getPersonById(
+            @NotNull(message = "person id required")
+            @Positive(message = "person id must be positive")
+            @PathVariable Long id) {
         return null;
     }
 
     @PostMapping
-    public ResponseEntity<PersonResponse> createPerson(@RequestBody PersonRequest personRequest) {
+    public ResponseEntity<PersonResponse> createPerson(
+            @Valid
+            @RequestBody PersonRequest personRequest) {
         return null;
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<PersonResponse> updatePerson(@PathVariable Long id, @RequestBody PersonRequest personRequest) {
+    public ResponseEntity<PersonResponse> updatePerson(
+            @NotNull(message = "person id required")
+            @Positive(message = "person id must be positive")
+            @PathVariable Long id,
+            @Valid
+            @RequestBody PersonRequest personRequest) {
         return null;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePerson(
+            @NotNull(message = "person id required")
+            @Positive(message = "person id must be positive")
+            @PathVariable Long id) {
         return null;
     }
 }
