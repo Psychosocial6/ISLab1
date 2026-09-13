@@ -1,9 +1,9 @@
-package org.backend.lab1.person;
+package org.backend.lab1.persons;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.backend.lab1.person.dto.PersonRequest;
-import org.backend.lab1.person.dto.PersonResponse;
+import org.backend.lab1.persons.dto.PersonRequest;
+import org.backend.lab1.persons.dto.PersonResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/persons")
+@RequestMapping("/api/person")
 @RestController
 public class PersonController {
     private final PersonService personService;
@@ -29,7 +29,7 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PersonResponse> getPerson(@PathVariable Long id) {
+    public ResponseEntity<PersonResponse> getPersonById(@PathVariable Long id) {
         return null;
     }
 
