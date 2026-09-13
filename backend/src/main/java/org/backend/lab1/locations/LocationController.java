@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/location")
 @RestController
@@ -14,7 +16,7 @@ public class LocationController {
     private final LocationService locationService;
 
     @GetMapping
-    public ResponseEntity<LocationResponse> getLocations() {
+    public ResponseEntity<List<LocationResponse>> getLocations() {
         return null;
     }
 }
