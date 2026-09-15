@@ -9,6 +9,7 @@ import org.backend.lab1.enums.Color;
 import org.backend.lab1.enums.Country;
 import org.backend.lab1.persons.dto.PersonRequest;
 import org.backend.lab1.persons.dto.PersonResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +36,8 @@ public class PersonController {
     @GetMapping
     public ResponseEntity<List<PersonResponse>> getPersons() {
         log.info("getPersons called");
-        return null;
+        List<PersonResponse> persons = personService.getPersons();
+        return ResponseEntity.ok(persons);
     }
 
     @GetMapping("/{id}")
@@ -44,7 +46,8 @@ public class PersonController {
             @Positive(message = "person id must be positive")
             @PathVariable Long id) {
         log.info("getPersonById called, id={}", id);
-        return null;
+        PersonResponse person = personService.getPersonById(id);
+        return ResponseEntity.ok(person);
     }
 
     @PostMapping
@@ -52,7 +55,8 @@ public class PersonController {
             @Valid
             @RequestBody PersonRequest personRequest) {
         log.info("createPerson called, personRequest={}", personRequest);
-        return null;
+        PersonResponse person = personService.createPerson(personRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
     @PatchMapping("/{id}")
@@ -63,7 +67,8 @@ public class PersonController {
             @Valid
             @RequestBody PersonRequest personRequest) {
         log.info("updatePerson called, id={}, personRequest={}", id, personRequest);
-        return null;
+        PersonResponse person = personService.updatePerson(id, personRequest);
+        return ResponseEntity.ok(person);
     }
 
     @DeleteMapping("/{id}")
@@ -72,19 +77,24 @@ public class PersonController {
             @Positive(message = "person id must be positive")
             @PathVariable Long id) {
         log.info("deletePerson called, id={}", id);
-        return null;
+        personService.deletePerson(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete-by-height")
-    public ResponseEntity<Void> deleteByHeight(@RequestParam(name = "height") Double height) {
+    public ResponseEntity<Void> deleteByHeight(
+            @RequestParam(name = "height")
+            Double height) {
         log.info("deleteByHeight called, height={}", height);
-        return null;
+        personService.deleteByHeight(height);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/avg-height")
     public ResponseEntity<Map<String, Double>> getAverageHeight() {
         log.info("getAverageHeight called");
-        return null;
+        Map<String, Double> averageHeight = personService.getAverageHeight();
+        return ResponseEntity.ok(averageHeight);
     }
 
     @GetMapping("/count-nationality-less-than")
@@ -92,18 +102,21 @@ public class PersonController {
             @RequestParam(name = "nationality")
             Country nationality) {
         log.info("countNationalityLessThan called, nationality={}", nationality);
-        return null;
+        Map<String, Long> count = personService.countNationalityLessThan();
+        return ResponseEntity.ok(count);
     }
 
     @GetMapping("/count-hair-color")
     public ResponseEntity<Map<String, Long>> countHairColor(@RequestParam(name = "hair-color") Color color) {
         log.info("countHairColor called, color={}", color);
-        return null;
+        Map<String, Long> count = personService.countHairColor(color);
+        return ResponseEntity.ok(count);
     }
 
     @GetMapping("/hair-color-percentage")
     public ResponseEntity<Map<String, Double>> getHairColorPercentage(@RequestParam(name = "hair-color") Color color) {
         log.info("getHairColorPercentage called, color={}", color);
-        return null;
+        Map<String, Double> percentage = personService.getHairColorPercentage(color);
+        return ResponseEntity.ok(percentage);
     }
 }
