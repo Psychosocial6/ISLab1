@@ -1,21 +1,20 @@
 package org.backend.lab1.persons;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.backend.lab1.enums.Color;
 import org.backend.lab1.persons.dto.PersonRequest;
 import org.backend.lab1.persons.dto.PersonResponse;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class PersonService {
+    private final PersonRepository personRepository;
 
     public List<PersonResponse> getPersons() {
 
