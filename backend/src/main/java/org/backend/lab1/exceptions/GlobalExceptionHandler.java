@@ -2,6 +2,7 @@ package org.backend.lab1.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.backend.lab1.exceptions.custom.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -66,6 +67,30 @@ public class GlobalExceptionHandler {
         log.warn("HttpMessageNotReadableException, message={}", message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        log.warn("{}, message={}", ex.getClass().getSimpleName(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(Exception ex) {
+        String message = "Internal server error";
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                message,
+                LocalDateTime.now()
+        );
+        log.error("Internal server error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
     }
 
 }

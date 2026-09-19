@@ -23,4 +23,9 @@ public class CoordinatesEntity {
     private Float x;
     @Column(name = "y", nullable = false)
     private Float y;
+
+    public CoordinatesEntity(Float x, Float y) {
+        this.x = x;
+        this.y = y;
+    }
 }

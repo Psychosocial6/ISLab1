@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PersonMapper {
     private final CoordinatesMapper coordinatesMapper;
-    private LocationMapper locationMapper;
+    private final LocationMapper locationMapper;
 
     public PersonResponse fromEntity(PersonEntity personEntity) {
         return new PersonResponse(

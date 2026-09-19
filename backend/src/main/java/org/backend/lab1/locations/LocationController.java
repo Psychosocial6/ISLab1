@@ -20,6 +20,6 @@ public class LocationController {
     @GetMapping
     public ResponseEntity<List<LocationResponse>> getLocations() {
         log.info("getLocations called");
-        return null;
+        return ResponseEntity.ok(locationService.getLocations());
     }
 }

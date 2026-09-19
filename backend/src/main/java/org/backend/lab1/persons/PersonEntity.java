@@ -58,6 +58,28 @@ public class PersonEntity {
     @Enumerated(EnumType.STRING)
     private Country nationality;
 
+    public PersonEntity(
+            String name,
+            CoordinatesEntity coordinates,
+            Color eyeColor,
+            Color hairColor,
+            LocationEntity location,
+            Double height,
+            ZonedDateTime birthday,
+            Double weight,
+            Country nationality
+    ) {
+        this.name = name;
+        this.coordinates = coordinates;
+        this.eyeColor = eyeColor;
+        this.hairColor = hairColor;
+        this.location = location;
+        this.height = height;
+        this.birthday = birthday;
+        this.weight = weight;
+        this.nationality = nationality;
+    }
+
     @PrePersist
     private void onCreate() {
         creationDate = LocalDateTime.now();

@@ -9,14 +9,15 @@ import org.backend.lab1.enums.Color;
 import org.backend.lab1.enums.Country;
 import org.backend.lab1.persons.dto.PersonRequest;
 import org.backend.lab1.persons.dto.PersonResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,9 +35,12 @@ public class PersonController {
     private final PersonService personService;
 
     @GetMapping
-    public ResponseEntity<List<PersonResponse>> getPersons() {
+    public ResponseEntity<List<PersonResponse>> getPersons(
+            @RequestParam(required = false)
+            String name,
+            Pageable pageable) {
         log.info("getPersons called");
-        List<PersonResponse> persons = personService.getPersons();
+        List<PersonResponse> persons = personService.getPersons(pageable, name);
         return ResponseEntity.ok(persons);
     }
 
@@ -59,7 +63,7 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<PersonResponse> updatePerson(
             @NotNull(message = "person id required")
             @Positive(message = "person id must be positive")
@@ -75,9 +79,12 @@ public class PersonController {
     public ResponseEntity<Void> deletePerson(
             @NotNull(message = "person id required")
             @Positive(message = "person id must be positive")
-            @PathVariable Long id) {
-        log.info("deletePerson called, id={}", id);
-        personService.deletePerson(id);
+            @PathVariable Long id,
+            @NotNull(message = "id to transfer required")
+            @Positive(message = "transfer id must be positive")
+            @RequestParam Long transferToId) {
+        log.info("deletePerson called, id={}, transferToId={}", id, transferToId);
+        personService.deletePerson(id, transferToId);
         return ResponseEntity.noContent().build();
     }
 
@@ -102,7 +109,7 @@ public class PersonController {
             @RequestParam(name = "nationality")
             Country nationality) {
         log.info("countNationalityLessThan called, nationality={}", nationality);
-        Map<String, Long> count = personService.countNationalityLessThan();
+        Map<String, Long> count = personService.countNationalityLessThan(nationality);
         return ResponseEntity.ok(count);
     }
 

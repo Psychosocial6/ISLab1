@@ -25,4 +25,10 @@ public class LocationEntity {
     private Long y;
     @Column(name = "z", nullable = false)
     private Double z;
+
+    public LocationEntity(Double x, Long y, Double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 }
