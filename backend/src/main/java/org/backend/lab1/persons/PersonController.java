@@ -9,6 +9,7 @@ import org.backend.lab1.enums.Color;
 import org.backend.lab1.enums.Country;
 import org.backend.lab1.persons.dto.PersonRequest;
 import org.backend.lab1.persons.dto.PersonResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 @Validated
@@ -35,12 +35,12 @@ public class PersonController {
     private final PersonService personService;
 
     @GetMapping
-    public ResponseEntity<List<PersonResponse>> getPersons(
+    public ResponseEntity<Page<PersonResponse>> getPersons(
             @RequestParam(required = false)
             String name,
             Pageable pageable) {
         log.info("getPersons called");
-        List<PersonResponse> persons = personService.getPersons(pageable, name);
+        Page<PersonResponse> persons = personService.getPersons(pageable, name);
         return ResponseEntity.ok(persons);
     }
 

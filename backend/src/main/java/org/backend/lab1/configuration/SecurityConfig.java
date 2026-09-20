@@ -1,7 +1,8 @@
-package org.backend.lab1.security;
+package org.backend.lab1.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.backend.lab1.exceptions.custom.UserNotFoundException;
+import org.backend.lab1.security.JwtFilter;
 import org.backend.lab1.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +39,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**")
+                .authorizeHttpRequests(auth -> auth.requestMatchers(
+                                "/api/auth/**",
+                                "/ws/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

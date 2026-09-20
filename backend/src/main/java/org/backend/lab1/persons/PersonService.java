@@ -15,8 +15,13 @@ import org.backend.lab1.locations.LocationRepository;
 import org.backend.lab1.persons.dto.PersonRequest;
 import org.backend.lab1.persons.dto.PersonResponse;
 import org.backend.lab1.utils.PersonMapper;
+import org.backend.lab1.websocket.Event;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.Map;
@@ -25,13 +30,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class PersonService {
+    private static final String destination = "/topic/persons";
     private final PersonRepository personRepository;
     private final CoordinatesRepository coordinatesRepository;
     private final LocationRepository locationRepository;
     private final PersonMapper personMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public List<PersonResponse> getPersons(Pageable pageable, String name) {
-        return personRepository.findByNameContainingIgnoreCase(name, pageable);
+    public Page<PersonResponse> getPersons(Pageable pageable, String name) {
+        if (name == null) {
+            return personRepository.findAll(pageable).map(personMapper::fromEntity);
+        }
+        return personRepository.findByNameContainingIgnoreCase(name, pageable).map(personMapper::fromEntity);
 
     }
 
@@ -54,7 +64,20 @@ public class PersonService {
                 personRequest.weight(),
                 personRequest.nationality()
         );
-        return personMapper.fromEntity(personRepository.save(personEntity));
+
+        PersonResponse response = personMapper.fromEntity(personRepository.save(personEntity));
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                Event<PersonResponse> message = new Event<>(
+                        Event.EventType.CREATE,
+                        response.id(),
+                        response
+                );
+                messagingTemplate.convertAndSend(destination, message);
+            }
+        });
+        return response;
     }
 
     @Transactional
@@ -71,11 +94,27 @@ public class PersonService {
         personEntity.setWeight(personRequest.weight());
         personEntity.setNationality(personRequest.nationality());
 
-        return personMapper.fromEntity(personRepository.save(personEntity));
+        PersonResponse response = personMapper.fromEntity(personRepository.save(personEntity));
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                Event<PersonResponse> message = new Event<>(
+                        Event.EventType.UPDATE,
+                        response.id(),
+                        response
+                );
+                messagingTemplate.convertAndSend(destination, message);
+            }
+        });
+
+        return response;
     }
 
     @Transactional
     public void deletePerson(Long id, Long transferToId) {
+        if (id.equals(transferToId)) {
+            throw new IllegalArgumentException("cannot transfer id to deleted person");
+        }
         PersonEntity personEntity = personRepository.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException(id));
         PersonEntity transferPersonEntity = personRepository.findById(transferToId)
@@ -84,14 +123,49 @@ public class PersonService {
         if (personEntity.getLocation() != null) {
             transferPersonEntity.setLocation(personEntity.getLocation());
         }
-        personRepository.save(transferPersonEntity);
+        PersonResponse updated = personMapper.fromEntity(personRepository.save(transferPersonEntity));
+        Long deletedId = personEntity.getId();
         personRepository.delete(personEntity);
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                Event<PersonResponse> messageDelete = new Event<>(
+                        Event.EventType.DELETE,
+                        deletedId,
+                        null
+                );
+                messagingTemplate.convertAndSend(destination, messageDelete);
+                Event<PersonResponse> messageUpdate = new Event<>(
+                        Event.EventType.UPDATE,
+                        updated.id(),
+                        updated
+                );
+                messagingTemplate.convertAndSend(destination, messageUpdate);
+            }
+        });
     }
 
     @Transactional
     public void deleteByHeight(Double height) {
         List<PersonEntity> personEntities = personRepository.findByHeight(height);
+        List<Long> deletedIds = personEntities.stream()
+                .map(PersonEntity::getId)
+                .toList();
         personRepository.deleteAll(personEntities);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                for (Long id : deletedIds) {
+                    Event<PersonResponse> message = new Event<>(
+                            Event.EventType.DELETE,
+                            id,
+                            null
+                    );
+                    messagingTemplate.convertAndSend(destination, message);
+                }
+            }
+        });
     }
 
     public Map<String, Double> getAverageHeight() {
@@ -116,7 +190,7 @@ public class PersonService {
         Long count = personRepository.findAll()
                 .stream()
                 .map(PersonEntity::getHairColor)
-                .filter(c -> c.compareTo(color) == 0)
+                .filter(c -> c == color)
                 .count();
         return Map.of("count", count);
     }
