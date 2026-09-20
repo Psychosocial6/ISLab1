@@ -85,10 +85,38 @@ public class PersonService {
         PersonEntity personEntity = personRepository.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException(id));
         personEntity.setName(personRequest.name());
-        personEntity.setCoordinates(resolveCoordinates(personRequest));
+        if (personRequest.coordinatesId() != null) {
+            personEntity.setCoordinates(coordinatesRepository.findById(personRequest.coordinatesId())
+                    .orElseThrow(() -> new CoordinatesNotFoundException(personRequest.coordinatesId())));
+        } else if (personRequest.coordinates() != null) {
+            CoordinatesEntity coordinates = personEntity.getCoordinates();
+            coordinates.setX(personRequest.coordinates().x());
+            coordinates.setY(personRequest.coordinates().y());
+            personEntity.setCoordinates(coordinatesRepository.save(coordinates));
+        }
         personEntity.setEyeColor(personRequest.eyeColor());
         personEntity.setHairColor(personRequest.hairColor());
-        personEntity.setLocation(resolveLocation(personRequest));
+        if (personRequest.locationId() != null) {
+            personEntity.setLocation(locationRepository.findById(personRequest.locationId())
+                    .orElseThrow(() -> new LocationNotFoundException(personRequest.locationId())));
+        } else if (personRequest.location() != null) {
+            LocationEntity location = personEntity.getLocation();
+            if (location != null) {
+                location.setX(personRequest.location().x());
+                location.setY(personRequest.location().y());
+                location.setZ(personRequest.location().z());
+                personEntity.setLocation(locationRepository.save(location));
+            } else {
+                LocationEntity newLoc = new LocationEntity(
+                        personRequest.location().x(),
+                        personRequest.location().y(),
+                        personRequest.location().z()
+                );
+                personEntity.setLocation(locationRepository.save(newLoc));
+            }
+        } else {
+            personEntity.setLocation(null);
+        }
         personEntity.setHeight(personRequest.height());
         personEntity.setBirthday(personRequest.birthday());
         personEntity.setWeight(personRequest.weight());

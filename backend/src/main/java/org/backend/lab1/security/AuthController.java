@@ -1,6 +1,7 @@
 package org.backend.lab1.security;
 
 import lombok.RequiredArgsConstructor;
+import org.backend.lab1.exceptions.custom.UserAlreadyExistsException;
 import org.backend.lab1.security.dto.AuthRequest;
 import org.backend.lab1.security.dto.AuthResponse;
 import org.backend.lab1.user.User;
@@ -26,7 +27,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
         if (userRepository.existsByUsername(request.username())) {
-            return ResponseEntity.badRequest().body("user already exists");
+            throw new UserAlreadyExistsException("User already exists");
         }
         User user = new User(request.username(), passwordEncoder.encode(request.password()));
         userRepository.save(user);

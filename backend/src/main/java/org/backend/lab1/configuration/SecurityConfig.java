@@ -24,7 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-    private final JwtFilter jwtFilter;
     private final UserRepository userRepository;
 
     @Bean
@@ -34,7 +33,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm ->

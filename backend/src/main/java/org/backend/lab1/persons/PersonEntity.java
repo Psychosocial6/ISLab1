@@ -30,7 +30,7 @@ import java.time.ZonedDateTime;
 @Table(name = "person")
 public class PersonEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", nullable = false, columnDefinition = "TEXT CHECK (trim(name) <> '')")
     private String name;

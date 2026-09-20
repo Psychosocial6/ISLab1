@@ -17,7 +17,7 @@ import lombok.Setter;
 @Entity
 public class LocationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "x", nullable = false)
     private Double x;
