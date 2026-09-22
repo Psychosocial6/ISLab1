@@ -107,13 +107,13 @@ export default function TablePage({personsEvent}) {
                         <th onClick={() => handleSort('id')}>ID {sortField === 'id' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                         <th onClick={() => handleSort('name')}>Name {sortField === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                         <th>Coords (X, Y)</th>
-                        <th onClick={() => handleSort('creationDate')}>Created</th>
+                        <th onClick={() => handleSort('creationDate')}>Created {sortField === 'creationDate' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                         <th>Eye</th>
                         <th>Hair</th>
                         <th>Location (X, Y, Z)</th>
-                        <th onClick={() => handleSort('height')}>Height</th>
+                        <th onClick={() => handleSort('height')}>Height {sortField === 'height' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                         <th>Birthday</th>
-                        <th onClick={() => handleSort('weight')}>Weight</th>
+                        <th onClick={() => handleSort('weight')}>Weight {sortField === 'weight' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                         <th>Nationality</th>
                         <th>Actions</th>
                     </tr>

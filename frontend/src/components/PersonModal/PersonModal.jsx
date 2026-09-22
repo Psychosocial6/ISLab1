@@ -183,7 +183,7 @@ export default function PersonModal({person, onClose, onSaved}) {
                     </fieldset>
 
                     <fieldset className="fieldset">
-                        <legend>Location (Optional)</legend>
+                        <legend>Location</legend>
                         <div className="radio-group">
                             <label>
                                 <input type="radio" value="none" checked={locMode === 'none'}

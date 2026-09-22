@@ -4,7 +4,7 @@ import './Navbar.css';
 export default function Navbar({currentTab, setCurrentTab, username, onLogout}) {
     return (
         <nav className="navbar">
-            <div className="nav-brand">Person Manager</div>
+            <div className="nav-brand"></div>
             <div className="nav-links">
                 <button
                     className={`nav-btn ${currentTab === 'table' ? 'active' : ''}`}

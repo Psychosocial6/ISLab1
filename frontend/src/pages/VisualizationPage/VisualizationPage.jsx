@@ -100,7 +100,6 @@ export default function VisualizationPage({personsEvent}) {
                     <div className="vis-tooltip">
                         <strong>{hovered.name}</strong> (ID: {hovered.id})<br/>
                         X: {hovered.coordinates?.x}, Y: {hovered.coordinates?.y}<br/>
-                        Height: {hovered.height} | Nationality: {hovered.nationality}
                     </div>
                 )}
             </div>
