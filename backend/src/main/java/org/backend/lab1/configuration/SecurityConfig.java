@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.backend.lab1.exceptions.custom.UserNotFoundException;
 import org.backend.lab1.security.JwtFilter;
 import org.backend.lab1.user.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +34,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtFilter jwtFilter,
+            CorsConfigurationSource corsConfigurationSource) {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -49,11 +53,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource(
+            @Value("${app.allowed.origins}")
+            List<String> origins,
+            @Value("${app.allowed.methods}")
+            List<String> methods,
+            @Value("${app.allowed.headers}")
+            List<String> headers) {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+        corsConfiguration.setAllowedOrigins(origins);
+        corsConfiguration.setAllowedMethods(methods);
+        corsConfiguration.setAllowedHeaders(headers);
         corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
