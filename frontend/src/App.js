@@ -10,7 +10,7 @@ import './App.css';
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [username, setUsername] = useState(localStorage.getItem('username') || '');
-    const [currentTab, setCurrentTab] = useState('table'); // 'table' | 'visualization' | 'operations'
+    const [currentTab, setCurrentTab] = useState('table');
     const [wsEvent, setWsEvent] = useState(null);
 
     const handleLoginSuccess = (user, jwtToken) => {
